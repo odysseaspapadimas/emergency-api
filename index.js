@@ -22,6 +22,10 @@ io.on("connection", (socket) => {
     console.log("sender", senderId);
     io.emit("emergency", { senderId, date });
   });
+
+  socket.on("ping", () => {
+    console.log("pinged");
+  });
   socket.on("disconnect", () => {});
 });
 
