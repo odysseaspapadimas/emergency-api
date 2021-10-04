@@ -1,32 +1,35 @@
-const http = require("http");
-const express = require("express");
-const socketio = require("socket.io");
-const cors = require("cors");
-
-const PORT = process.env.PORT || 3001;
-
+/* eslint-disable prettier/prettier */
+const express = require('express');
 const app = express();
-const server = http.createServer(app);
-const io = require("socket.io")(server, {
+const server = require('http').Server(app);
+const cors = require('cors');
+const io = require('socket.io')(server, {
   cors: {
-    origin: "*",
+    origin: '*',
   },
 });
 
-app.get("/", (req, res) => {
-  res.send({ response: "Server is up and running" });
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send({response: 'Server is up and running'});
 });
 
-io.on("connection", (socket) => {
-  socket.on("emergency", ({ senderId, date }) => {
-    console.log("sender", senderId);
-    io.emit("emergency", { senderId, date });
+io.on('connection', socket => {
+  console.log('socket connected');
+  io.emit('welcome', `Welcome to ${PORT}`);
+  socket.on('joinRoom', ({roomId, user}) => {
+    console.log('user connected :', roomId, user);
   });
 
-  socket.on("ping", () => {
-    console.log("pinged");
+  socket.on('emergency', sender => {
+    io.emit('emergency', sender);
   });
-  socket.on("disconnect", () => {});
+  socket.on('online', () => {
+    console.log('online');
+  });
+
+  socket.on('disconnect', () => {});
 });
 
 server.listen(PORT, () => {
