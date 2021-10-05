@@ -25,8 +25,8 @@ io.on('connection', socket => {
   socket.on('emergency', sender => {
     io.emit('emergency', sender);
   });
-  socket.on('online', () => {
-    console.log('online');
+  socket.on('online', msg => {
+    console.log('online', msg);
   });
 
   socket.on('disconnect', () => {});
